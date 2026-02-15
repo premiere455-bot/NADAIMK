@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manus AI - Account Creator Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .section-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input[readonly] {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .result-box {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 13px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .result-box.success {
+            background: #f0fdf4;
+            border-color: #86efac;
+        }
+
+        .result-box.error {
+            background: #fef2f2;
+            border-color: #fca5a5;
+            color: #991b1b;
+        }
+
+        .result-box.waiting {
+            background: #fffbeb;
+            border-color: #fde047;
+            color: #92400e;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .status-badge.success {
+            background: #86efac;
+            color: #166534;
+        }
+
+        .status-badge.error {
+            background: #fca5a5;
+            color: #7f1d1d;
+        }
+
+        .status-badge.waiting {
+            background: #fde047;
+            color: #78350f;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #667eea;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .copy-btn {
+            background: #e5e7eb;
+            color: #333;
+            padding: 6px 12px;
+            font-size: 12px;
+            margin-left: 10px;
+            width: auto;
+            margin-bottom: 0;
+        }
+
+        .copy-btn:hover {
+            background: #d1d5db;
+        }
+
+        .info-text {
+            color: #666;
+            font-size: 13px;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+
+        .divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 20px 0;
+        }
+
+        .code-display {
+            background: #1f2937;
+            color: #10b981;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 2px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 Manus AI Account Creator</h1>
+        <p class="subtitle">Teste a criação automatizada de contas com e-mail temporário</p>
+
+        <!-- Seção 1: Gerar E-mail -->
+        <div class="section">
+            <div class="section-title">1️⃣ Gerar E-mail Temporário</div>
+            <button onclick="generateEmail()" id="generateBtn">Gerar E-mail Novo</button>
+            
+            <div class="input-group" style="margin-top: 15px;">
+                <label>E-mail Gerado:</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="email" id="emailInput" readonly placeholder="Aguardando geração...">
+                    <button class="copy-btn" onclick="copyToClipboard('emailInput')" id="copyEmailBtn" style="display: none;">Copiar</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Senha:</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="passwordInput" readonly placeholder="Aguardando geração...">
+                    <button class="copy-btn" onclick="copyToClipboard('passwordInput')" id="copyPasswordBtn" style="display: none;">Copiar</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Token de Acesso:</label>
+                <input type="text" id="tokenInput" readonly placeholder="Aguardando geração..." style="font-size: 11px;">
+            </div>
+
+            <div id="emailResult" class="result-box" style="display: none;"></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Seção 2: Instruções -->
+        <div class="section">
+            <div class="section-title">📋 Próximos Passos</div>
+            <div class="info-text">
+                <strong>1.</strong> Copie o e-mail gerado acima<br>
+                <strong>2.</strong> Acesse o link de convite: <a href="https://manus.im/invitation/UHGDPE49VVIIG9A" target="_blank" style="color: #667eea; text-decoration: none;">https://manus.im/invitation/UHGDPE49VVIIG9A</a><br>
+                <strong>3.</strong> Cole o e-mail no formulário<br>
+                <strong>4.</strong> Resolva o desafio do Cloudflare (Verify you are human)<br>
+                <strong>5.</strong> Clique em "Verificar Código" abaixo para obter o código de confirmação
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Seção 3: Verificar Código -->
+        <div class="section">
+            <div class="section-title">✅ Verificar Código de Confirmação</div>
+            <button onclick="checkCode()" id="checkCodeBtn" disabled>Verificar Código</button>
+            
+            <div id="codeResult" class="result-box" style="display: none;"></div>
+            
+            <div id="codeDisplay" class="code-display" style="display: none;"></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Seção 4: Logs -->
+        <div class="section">
+            <div class="section-title">📊 Logs da API</div>
+            <div id="logs" class="result-box" style="max-height: 150px; font-size: 12px; color: #666;">
+                <p>Aguardando ações...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://8000-i7k3icfad39lvn09xn7vm-6c5998f4.us1.manus.computer';
+        let currentToken = null;
+        let checkCodeInterval = null;
+
+        function addLog(message) {
+            const logsDiv = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString('pt-BR');
+            logsDiv.innerHTML += `<p>[${timestamp}] ${message}</p>`;
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            element.select();
+            document.execCommand('copy');
+            addLog(`✓ Copiado: ${element.value.substring(0, 20)}...`);
+        }
+
+        async function generateEmail() {
+            const btn = document.getElementById('generateBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span>Gerando...';
+            
+            try {
+                addLog('Iniciando geração de e-mail temporário...');
+                const response = await fetch(`${API_URL}/create-temp-email`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erro: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                currentToken = data.token;
+
+                document.getElementById('emailInput').value = data.email;
+                document.getElementById('passwordInput').value = data.password;
+                document.getElementById('tokenInput').value = data.token;
+
+                document.getElementById('copyEmailBtn').style.display = 'block';
+                document.getElementById('copyPasswordBtn').style.display = 'block';
+                document.getElementById('checkCodeBtn').disabled = false;
+
+                const resultDiv = document.getElementById('emailResult');
+                resultDiv.innerHTML = `
+                    <span class="status-badge success">✓ E-mail Criado com Sucesso</span>
+                    <p style="margin-top: 10px; color: #666;">
+                        ID da Conta: <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">${data.account_id}</code>
+                    </p>
+                `;
+                resultDiv.style.display = 'block';
+
+                addLog(`✓ E-mail criado: ${data.email}`);
+            } catch (error) {
+                const resultDiv = document.getElementById('emailResult');
+                resultDiv.innerHTML = `<span class="status-badge error">✗ Erro: ${error.message}</span>`;
+                resultDiv.style.display = 'block';
+                addLog(`✗ Erro ao gerar e-mail: ${error.message}`);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Gerar E-mail Novo';
+            }
+        }
+
+        async function checkCode() {
+            if (!currentToken) {
+                alert('Gere um e-mail primeiro!');
+                return;
+            }
+
+            const btn = document.getElementById('checkCodeBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span>Verificando...';
+
+            try {
+                addLog('Verificando caixa de entrada...');
+                const response = await fetch(`${API_URL}/check-verification-code/${currentToken}`);
+                const data = await response.json();
+
+                const resultDiv = document.getElementById('codeResult');
+                const codeDisplay = document.getElementById('codeDisplay');
+
+                if (data.status === 'waiting') {
+                    resultDiv.innerHTML = `<span class="status-badge waiting">⏳ ${data.message}</span>`;
+                    resultDiv.className = 'result-box waiting';
+                    codeDisplay.style.display = 'none';
+                    addLog('⏳ Nenhum e-mail recebido ainda. Tente novamente em alguns segundos...');
+                } else if (data.status === 'received') {
+                    resultDiv.innerHTML = `
+                        <span class="status-badge success">✓ E-mail Recebido</span>
+                        <p style="margin-top: 10px;">
+                            <strong>De:</strong> ${data.from}<br>
+                            <strong>Assunto:</strong> ${data.subject}
+                        </p>
+                    `;
+                    resultDiv.className = 'result-box success';
+
+                    if (data.code) {
+                        codeDisplay.innerHTML = data.code;
+                        codeDisplay.style.display = 'block';
+                        addLog(`✓ Código extraído: ${data.code}`);
+                        clearInterval(checkCodeInterval);
+                    } else {
+                        resultDiv.innerHTML += `<p style="margin-top: 10px; color: #666;">Código não encontrado no e-mail. Conteúdo: <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 11px;">${data.full_content.substring(0, 100)}...</code></p>`;
+                        addLog('⚠️ E-mail recebido, mas código não encontrado');
+                    }
+                }
+
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                const resultDiv = document.getElementById('codeResult');
+                resultDiv.innerHTML = `<span class="status-badge error">✗ Erro: ${error.message}</span>`;
+                resultDiv.className = 'result-box error';
+                resultDiv.style.display = 'block';
+                addLog(`✗ Erro ao verificar código: ${error.message}`);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Verificar Código';
+            }
+        }
+
+        // Auto-verificar código a cada 5 segundos após gerar e-mail
+        document.getElementById('generateBtn').addEventListener('click', () => {
+            clearInterval(checkCodeInterval);
+            setTimeout(() => {
+                checkCodeInterval = setInterval(checkCode, 5000);
+                addLog('🔄 Verificação automática iniciada (a cada 5 segundos)');
+            }, 2000);
+        });
+
+        addLog('Página carregada. Clique em "Gerar E-mail Novo" para começar.');
+    </script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação da API e Site de Teste - Manus AI Account Creator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        h1 {
+            font-size: 2.5em;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+        h2 {
+            font-size: 1.8em;
+            color: #3498db;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        h3 {
+            font-size: 1.4em;
+            color: #2ecc71;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        code {
+            background-color: #eef;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #c0392b;
+        }
+        pre {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        pre code {
+            background-color: transparent;
+            color: #f8f8f2;
+            padding: 0;
+        }
+        .endpoint-box {
+            border: 1px solid #ddd;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .endpoint-box h4 {
+            margin-top: 0;
+            color: #3498db;
+            font-size: 1.2em;
+        }
+        .method {
+            display: inline-block;
+            background-color: #2ecc71;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .note {
+            background-color: #fefce8;
+            border-left: 4px solid #facc15;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            color: #854d0e;
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul {
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Documentação da API e Site de Teste</h1>
+        <p>Esta página fornece a documentação completa para a API de criação de contas da Manus AI e o site de teste associado. A solução foi projetada para automatizar a geração de e-mails temporários e a captura de códigos de verificação, facilitando o processo de registro em links de convite da Manus AI.</p>
+
+        <h2>Visão Geral da Solução</h2>
+        <p>A solução consiste em dois componentes principais:</p>
+        <ul>
+            <li><strong>API (FastAPI)</strong>: Responsável por interagir com o serviço de e-mail temporário (Mail.tm) para criar contas de e-mail e monitorar caixas de entrada.</li>
+            <li><strong>Site de Teste (HTML/JavaScript)</strong>: Uma interface amigável para interagir com a API, permitindo que o usuário execute o fluxo de criação de conta de forma visual.</li>
+        </ul>
+        <p class="note">
+            <strong>Importante:</strong> O processo de registro na Manus AI inclui um desafio de segurança do Cloudflare Turnstile ("Verify you are human"). Esta API não automatiza a resolução deste desafio, que deve ser tratado manualmente ou por uma ferramenta de automação de navegador externa.
+        </p>
+
+        <h2>API - Manus AI Account Creator</h2>
+        <p>A API é construída com FastAPI e expõe os seguintes endpoints:</p>
+
+        <div class="endpoint-box">
+            <h4><span class="method">POST</span> <code>/create-temp-email</code></h4>
+            <p>Cria um novo e-mail temporário usando o serviço Mail.tm.</p>
+            <h3>Requisição</h3>
+            <p>Não requer parâmetros no corpo da requisição.</p>
+            <h3>Resposta (200 OK)</h3>
+            <pre><code>{
+    "email": "manus_exemplo@dominio.com",
+    "password": "senha_gerada",
+    "token": "jwt_token_para_acesso_a_caixa_de_entrada",
+    "account_id": "id_da_conta_no_mail.tm"
+}</code></pre>
+            <p>Retorna o endereço de e-mail gerado, a senha para a conta do Mail.tm, um token JWT para acessar a caixa de entrada e o ID da conta.</p>
+        </div>
+
+        <div class="endpoint-box">
+            <h4><span class="method">GET</span> <code>/check-verification-code/{token}</code></h4>
+            <p>Verifica a caixa de entrada do e-mail temporário associado ao <code>token</code> fornecido em busca de um código de verificação de 6 dígitos da Manus AI.</p>
+            <h3>Parâmetros de Path</h3>
+            <ul>
+                <li><code>token</code> (string, obrigatório): O token JWT obtido do endpoint <code>/create-temp-email</code>.</li>
+            </ul>
+            <h3>Resposta (200 OK)</h3>
+            <pre><code>{
+    "status": "received",
+    "from": "no-reply@manus.im",
+    "subject": "Seu código de verificação da Manus AI",
+    "code": "123456",
+    "full_content": "Conteúdo completo do e-mail..."
+}</code></pre>
+            <p>Se um e-mail com um código for encontrado, retorna o status <code>"received"</code>, remetente, assunto, o código extraído e o conteúdo completo do e-mail. Se nenhum e-mail for encontrado, retorna <code>{"status": "waiting", "message": "Nenhum e-mail recebido ainda."}</code>.</p>
+        </div>
+
+        <h2>Site de Teste</h2>
+        <p>O arquivo <code>index.html</code> fornece uma interface gráfica para interagir com a API e simular o fluxo de criação de contas. Ele é composto por:</p>
+        <ul>
+            <li><strong>Seção 1: Gerar E-mail Temporário</strong>: Um botão para chamar o endpoint <code>/create-temp-email</code> e exibir os dados do e-mail gerado (e-mail, senha, token).</li>
+            <li><strong>Seção 2: Próximos Passos</strong>: Instruções claras sobre como usar o e-mail gerado no link de convite da Manus AI e a necessidade de resolver o desafio do Cloudflare.</li>
+            <li><strong>Seção 3: Verificar Código de Confirmação</strong>: Um botão para chamar o endpoint <code>/check-verification-code/{token}</code>. O site automaticamente verifica a caixa de entrada a cada 5 segundos após a geração do e-mail e exibe o código de 6 dígitos quando encontrado.</li>
+            <li><strong>Seção 4: Logs da API</strong>: Um console simples para visualizar as interações com a API.</li>
+        </ul>
+
+        <h3>Como Usar o Site de Teste</h3>
+        <ol>
+            <li>Certifique-se de que a API (`main.py`) esteja em execução.</li>
+            <li>Abra o arquivo `index.html` em seu navegador web.</li>
+            <li>Clique em <strong>"Gerar E-mail Novo"</strong>.</li>
+            <li>Copie o e-mail gerado e navegue até o link de convite da Manus AI: <a href="https://manus.im/invitation/UHGDPE49VVIIG9A" target="_blank">https://manus.im/invitation/UHGDPE49VVIIG9A</a>.</li>
+            <li>Insira o e-mail no campo apropriado no site da Manus AI.</li>
+            <li>Resolva o desafio do Cloudflare Turnstile ("Verify you are human").</li>
+            <li>Retorne ao site de teste. Ele estará verificando automaticamente a caixa de entrada. Assim que o e-mail de verificação da Manus AI for recebido, o código de 6 dígitos será exibido.</li>
+            <li>Utilize este código para completar o registro na Manus AI.</li>
+        </ol>
+
+        <h2>Configuração e Execução Local</h2>
+        <p>Para executar a API e o site de teste localmente:</p>
+        <ol>
+            <li>Baixe e descompacte o arquivo `manus_api_with_site.zip`.</li>
+            <li>Navegue até o diretório descompactado no seu terminal.</li>
+            <li>Instale as dependências da API (se ainda não o fez):
+                <pre><code>pip install fastapi uvicorn requests</code></pre>
+            </li>
+            <li>Inicie a API:
+                <pre><code>python main.py</code></pre>
+                <p>A API será executada em `http://localhost:8000`.</p>
+            </li>
+            <li>Abra o arquivo `index.html` em seu navegador web.</li>
+            <li><strong>Ajuste no `index.html` (se necessário)</strong>: Se você estiver executando a API localmente e o site de teste não estiver acessando-a, verifique a linha `const API_URL` no arquivo `index.html`. Ela deve apontar para `http://localhost:8000`.
+                <pre><code>const API_URL = 'http://localhost:8000';</code></pre>
+            </li>
+        </ol>
+
+        <p>Desenvolvido por Manus AI.</p>
+    </div>
+</body>
+</html>
